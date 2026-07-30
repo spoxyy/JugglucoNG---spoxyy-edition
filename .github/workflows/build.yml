@@ -24,7 +24,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build the APK
-        run: ./gradlew assembleDebug -Dorg.gradle.jvmargs=-Xmx8g
+        run: ./gradlew assembleMobileLibre3SiDexGoogleDebug -Dorg.gradle.jvmargs=-Xmx8g
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
