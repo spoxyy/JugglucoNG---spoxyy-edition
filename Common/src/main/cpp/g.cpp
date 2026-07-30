@@ -717,7 +717,7 @@ extern "C" JNIEXPORT jlong JNICALL fromjava(getdataptr)(JNIEnv *env, jclass cl,
           if (sens->isAccuChek()) {
             LOGGER("getdataptr(%.*s) AccuChek\n", (int)sensor.length(),
                    sensor.data());
-            candidate = new accustream(sensorindex, sens);
+            //candidate = new accustream(sensorindex, sens);
           } else if (sens->isAiDex()) {
             LOGGER("getdataptr(%.*s) AiDex\n", (int)sensor.length(),
                    sensor.data());
