@@ -874,7 +874,7 @@ class DashboardViewModel(
             var lastRecoveryRequestSerial: String? = null
             var hasSeenHistoryEmission = false
             val rawHistoryFlow = when (mode) {
-                CollectionMode.DASHBOARD -> glucoseRepository.getMergedHistoryFlowRaw(startTime = queryStartTimeMs)
+                CollectionMode.DASHBOARD -> glucoseRepository.getMergedHistoryFlowRaw(queryStartTimeMs)
                 CollectionMode.FULL_HISTORY -> glucoseRepository.getHistoryFlowRaw(queryStartTimeMs)
                 CollectionMode.INACTIVE -> return@launch
             }
