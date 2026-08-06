@@ -1658,14 +1658,15 @@ object StatsReportExporter {
 
             val zone = java.time.ZoneId.systemDefault()
             val dayFormatter = java.time.format.DateTimeFormatter.ofPattern("EEE, MMM d", Locale.getDefault())
-            val dailyProfiles = uiState.readings
+            // old
+            /* val dailyProfiles = uiState.readings
                 .groupBy { point ->
                     java.time.Instant.ofEpochMilli(point.timestamp).atZone(zone).toLocalDate()
                 }
                 .toSortedMap()
                 .entries
                 .toList()
-                .takeLast(3)
+                // .takeLast(3) // deleted for userInput
                 .reversed()
             val profileHeight = 240f
             val profileGap = 16f
@@ -1680,7 +1681,45 @@ object StatsReportExporter {
                 )
                 y += profileHeight + profileGap
             }
+            */
+            val dailyProfiles = uiState.readings
+                .groupBy { point ->
+                    java.time.Instant.ofEpochMilli(point.timestamp).atZone(zone).toLocalDate()
+                }
+                .toSortedMap()
+                .entries
+                .toList()
+                .reversed() // removed .takeLast(3) limit
 
+            val profileHeight = 240f
+            val profileGap = 16f
+            
+            dailyProfiles.forEach { (date, points) ->
+                // check if there is room for current page
+                if (y + profileHeight > pageHeight - margin - 36f) {
+                    // if page space is insufficient, wrap up the page
+                    drawFooter(canvas, colorWarn)
+                    doc.finishPage(page)
+                    
+                    // start a new page
+                    pageNumber += 1
+                    page = doc.startPage(PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create())
+                    canvas = page.canvas
+                    
+                    // reset vertical position and draw background
+                    drawPageChrome(canvas, colorWarn, colorPrimarySoft)
+                    y = margin + 20f 
+                }
+                
+                drawDailyProfileMiniChart(
+                    canvas = canvas,
+                    dayLabel = date.format(dayFormatter),
+                    dayReadings = points,
+                    top = y,
+                    height = profileHeight
+                )
+                y += profileHeight + profileGap
+            }
             drawFooter(canvas, colorWarn)
             doc.finishPage(page)
             context.contentResolver.openOutputStream(uri)?.use { out ->
